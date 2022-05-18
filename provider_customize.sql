@@ -1,22 +1,22 @@
 //create table in publisher shared database
-create or replace table "DCR_DEMO_PROVIDER_DB"."SHARED_SCHEMA"."PUBLISHER_CUSTOMER" as select b.*,  a.genre, a.affinity_score
+create or replace table "DCR_DEMOCUR_PROVIDER_DB"."SHARED_SCHEMA"."PUBLISHER_CUSTOMER" as select b.*,  a.genre, a.affinity_score
 from "CLEANROOM_AUDIENCE_SAMPLE"."SOURCE"."AFFINITY" a inner join "CLEANROOM_AUDIENCE_SAMPLE"."SOURCE"."SUBSCRIPTION" b
 on a.rec_id = b.rec_id;
 
 //create secure view 
-create or replace secure view "DCR_DEMO_PROVIDER_DB"."CLEANROOM"."PROVIDER_PUBLISHER" as select * from "DCR_DEMO_PROVIDER_DB"."SHARED_SCHEMA"."PUBLISHER_CUSTOMER";
+create or replace secure view "DCR_DEMOCUR_PROVIDER_DB"."CLEANROOM"."PROVIDER_PUBLISHER" as select * from "DCR_DEMOCUR_PROVIDER_DB"."SHARED_SCHEMA"."PUBLISHER_CUSTOMER";
 
 //apply row access policy
-ALTER TABLE  "DCR_DEMO_PROVIDER_DB"."CLEANROOM"."PROVIDER_PUBLISHER" add row access policy dcr_demo_provider_db.shared_schema.data_firewall on (email);
+ALTER TABLE  "DCR_DEMOCUR_PROVIDER_DB"."CLEANROOM"."PROVIDER_PUBLISHER" add row access policy dcr_DEMOCUR_provider_db.shared_schema.data_firewall on (email);
 
 //grant select on secure view to share
-grant select on "DCR_DEMO_PROVIDER_DB"."CLEANROOM"."PROVIDER_PUBLISHER" to share dcr_demo_data;
+grant select on "DCR_DEMOCUR_PROVIDER_DB"."CLEANROOM"."PROVIDER_PUBLISHER" to share dcr_DEMOCUR_data;
 
 
 
 //insert new template
 
-insert into dcr_demo_provider_db.templates.dcr_templates (template_name, template, dp_sensitivity, dimensions) 
+insert into dcr_DEMOCUR_provider_db.templates.dcr_templates (template_name, template, dp_sensitivity, dimensions) 
 values ('audience_overlap',
 $$
 select
@@ -45,4 +45,4 @@ having count(distinct p.user_id)  > 25
 order by count(distinct p.user_id) desc;
 $$,1,'c.country|c.marital|c.equipment_like|c.activity_like|c.age_range|c.state|c.lifestyle_like|c.gender|p.genre|p.bundle_user|p.subscription_type|p.product_name');
 
-select * from dcr_demo_provider_db.templates.dcr_templates ;
+select * from dcr_DEMOCUR_provider_db.templates.dcr_templates ;
